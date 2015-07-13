@@ -1,0 +1,30 @@
+Currently CWT files must be loaded directly into Production.
+So, create sp in Production Database.
+
+The reason files are loaded directly into Production is because
+
+I.)
+
+CWT sends data based on their change dates. 
+If they make a change, for example to ReasonCodes,
+then the change may generate a years worth of data causing huge files.
+
+
+II.)
+
+CWT sends an extra file containing Recordkeys to Delete before importing
+which uses the dba.CWTGTEMP table. 
+** This table must be in the database. (See file to create table)
+
+
+Therefore, deleting large amounts of data across server takes up processing time and memory.
+So, it is better to have this done in Production.
+
+
+______________________________________
+
+Currently,
+A CWTHtlChains table is also used for converting 3 letter chain codes to 2 in CWT sps.
+However this table is not maintained very much, because of the use of HNN. 
+
+

@@ -1,0 +1,21 @@
+USE [TMAN503_Name]
+GO
+
+/****** Object:  Table [dba].[CWTHtlChains]    Script Date: 12/30/2014 2:32:00 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dba].[CWTHtlChains](
+	[CWTCode] [nvarchar](3) NULL,
+	[CWTChainName] [nvarchar](50) NULL,
+	[TRXCode] [nvarchar](2) NULL,
+	[TRXChainName] [nvarchar](50) NULL,
+	[BrandName] [nvarchar](50) NULL
+) ON [PRIMARY]
+
+GO
+
+
