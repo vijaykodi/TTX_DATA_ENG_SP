@@ -88,12 +88,11 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
            INNER JOIN dba.InvoiceHeader IH
                    ON ( IH.IataNum= ID.IataNum
                         AND IH.RecordKey= ID.RecordKey
-                        AND IH.InvoiceDate = ID.InvoiceDate ) 
+                        AND IH.InvoiceDate = ID.InvoiceDate
+						AND IH.ClientCode = ID.ClientCode) --added by jm 
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND ID.IataNum= @IataNum
-           --and ID.IssueDate <> IH.InvoiceDate  
            AND ID.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 
@@ -117,12 +116,11 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
            INNER JOIN dba.InvoiceHeader IH
                    ON ( IH.IataNum= TS.IataNum
                         AND IH.RecordKey= TS.RecordKey
-                        AND IH.InvoiceDate = TS.InvoiceDate ) 
+                        AND IH.InvoiceDate = TS.InvoiceDate
+						 AND IH.ClientCode = TS.ClientCode) --added by jm 
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND TS.IataNum= @IataNum
-           ----and TS.IssueDate <> IH.InvoiceDate  
            AND TS.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 
@@ -142,16 +140,15 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
 
     UPDATE Car 
     SET    car.IssueDate = IH.InvoiceDate 
-    FROM   dba.Car car 
+    FROM   dba.Car CAR 
            INNER JOIN dba.InvoiceHeader IH
-                   ON ( IH.IataNum= car.IataNum
-                        AND IH.RecordKey= car.RecordKey
-                        AND IH.InvoiceDate = car.InvoiceDate ) 
+                   ON ( IH.IataNum= CAR.IataNum
+                        AND IH.RecordKey= CAR.RecordKey
+                        AND IH.InvoiceDate = CAR.InvoiceDate
+						AND IH.ClientCode = CAR.ClientCode) ----added by jm
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND car.IataNum= @IataNum
-           ----and car.IssueDate <> IH.InvoiceDate  
            AND car.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 
@@ -175,12 +172,11 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
            INNER JOIN dba.InvoiceHeader IH
                    ON ( IH.IataNum= htl.IataNum
                         AND IH.RecordKey= htl.RecordKey
-                        AND IH.InvoiceDate = htl.InvoiceDate ) 
+                        AND IH.InvoiceDate = htl.InvoiceDate
+						AND IH.ClientCode = htl.ClientCode) --added by jm  
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND htl.IataNum= @IataNum
-           ----and htl.IssueDate <> IH.InvoiceDate  
            AND htl.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 
@@ -204,12 +200,11 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
            INNER JOIN dba.InvoiceHeader IH
                    ON ( IH.IataNum= UD.IataNum
                         AND IH.RecordKey= UD.RecordKey
-                        AND IH.InvoiceDate = UD.InvoiceDate ) 
+                        AND IH.InvoiceDate = UD.InvoiceDate
+						AND IH.ClientCode = UD.ClientCode) --added by jm 
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND UD.IataNum= @IataNum
-           ----and UD.IssueDate <> IH.InvoiceDate  
            AND UD.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 
@@ -229,22 +224,21 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
 
     UPDATE pay 
     SET    pay.IssueDate = IH.InvoiceDate 
-    FROM   dba.Payment pay 
+    FROM   dba.Payment PAY 
            INNER JOIN dba.InvoiceHeader IH
-                   ON ( IH.IataNum= pay.IataNum
-                        AND IH.RecordKey= pay.RecordKey
-                        AND IH.InvoiceDate = pay.InvoiceDate ) 
+                   ON ( IH.IataNum= PAY.IataNum
+                        AND IH.RecordKey= PAY.RecordKey
+                        AND IH.InvoiceDate = PAY.InvoiceDate
+						AND IH.ClientCode = PAY.ClientCode) --added by jm
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND pay.IataNum= @IataNum
-           ----and pay.IssueDate <> IH.InvoiceDate  
            AND pay.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 
       @ProcedureName=@ProcName, 
       @LogStart=@TransStart, 
-      @StepName='When Payment IssueDate is Null', 
+      @StepName='6-When Payment IssueDate is Null', 
       @BeginDate=@LocalBeginIssueDate, 
       @EndDate= @LocalEndIssueDate, 
       @IataNum=@Iata, 
@@ -262,12 +256,11 @@ namely dba.InvoiceDetail,	dba.Transeg, dba.Car, dba.Hotel, dba.UDef, dba.Payment
            INNER JOIN dba.InvoiceHeader IH
                    ON ( IH.IataNum= Tax.IataNum
                         AND IH.RecordKey= Tax.RecordKey
-                        AND IH.InvoiceDate = Tax.InvoiceDate ) 
+                        AND IH.InvoiceDate = Tax.InvoiceDate
+						AND IH.ClientCode = Tax.ClientCode) --added by jm 
     WHERE  IH.ImportDt = @MaxImportDt 
-           AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
            AND IH.IataNum= @IataNum
            AND Tax.IataNum= @IataNum
-           ----and Tax.IssueDate <> IH.InvoiceDate  
            AND Tax.IssueDate IS NULL 
 
     EXEC dbo.sp_LogProcErrors 

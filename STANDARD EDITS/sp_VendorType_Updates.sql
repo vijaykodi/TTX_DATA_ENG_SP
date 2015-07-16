@@ -84,21 +84,20 @@ SET NOCOUNT ON
 
 	SET @TransStart = Getdate() 
 
-	UPDATE dba.invoicedetail 
-	SET    vendortype = 'RAIL' 
-	FROM   dba.invoicedetail ID 
+	UPDATE ID 
+	SET    ID.Vendortype = CASE 
+								WHEN  ID.vendortype NOT IN ( 'RAIL' ) OR ID.vendorname LIKE '%amtrak%' THEN 'RAIL' 
+	                            WHEN ID.VendorType NOT IN ( 'RAIL' ) AND ID.ValCarrierCode in ('2V') THEN 'RAIL' ELSE ID.VendorType END
+	FROM   dba.Invoicedetail ID 
 		   INNER JOIN dba.invoiceheader IH 
 				   ON ( IH.iatanum = ID.iatanum 
 						AND IH.clientcode = ID.clientcode 
 						AND IH.recordkey = ID.recordkey 
-						AND IH.invoicedate = ID.invoicedate ) 
+						AND IH.invoicedate = ID.invoicedate) 
 	WHERE  IH.importdt = @MaxImportDt 
 		   AND IH.iatanum = @IataNum 
-		   AND IH.invoicedate BETWEEN @FirstInvDate AND @LastInvDate 
 		   AND ID.iatanum = @IataNum 
-		   AND ID.invoicedate BETWEEN @FirstInvDate AND @LastInvDate 
-		   AND ID.vendortype NOT IN ( 'RAIL' ) 
-		   OR ID.vendorname LIKE '%amtrak%' 
+		 
 				 
 	EXEC dbo.Sp_logprocerrors 
 	  @ProcedureName=@ProcName, 
@@ -109,38 +108,6 @@ SET NOCOUNT ON
 	  @IataNum=@Iata, 
 	  @RowCount=@@ROWCOUNT, 
 	  @ERR=@@ERROR 
-
---------------------
---RAIL
---------------------
-	SET @TransStart = getdate()
-	
-	UPDATE ID 
-	SET    ID.VendorType = 'RAIL' 
-	FROM   dba.InvoiceDetail ID 
-		   INNER JOIN dba.InvoiceHeader IH 
-				   ON ( IH.IataNum = ID.IataNum 
-						AND IH.ClientCode = ID.ClientCode 
-						AND IH.recordkey = ID.recordkey 
-						AND IH.InvoiceDate = ID.InvoiceDate ) 
-	WHERE  IH.ImportDt = @MaxImportDt 
-		   AND IH.IataNum = @IataNum 
-		   AND IH.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
-		   AND ID.IataNum = @IataNum 
-		   AND ID.InvoiceDate BETWEEN @FirstInvDate AND @LastInvDate 
-		   AND ID.VendorType NOT IN ( 'RAIL' ) 
-		   AND ID.ValCarrierCode in ('2V')
-
-	EXEC dbo.sp_LogProcErrors 
-	  @ProcedureName=@ProcName, 
-	  @LogStart=@TransStart, 
-	  @StepName='Update VendorType to RAIL where ValCarrierCodes in 2V', 
-	  @BeginDate=@LocalBeginIssueDate, 
-	  @EndDate=@LocalEndIssueDate, 
-	  @IataNum=@Iata, 
-	  @RowCount=@@ROWCOUNT, 
-	  @ERR=@@ERROR 
-
 
 /******************************************************************  
     -----END SVendorType Updates--------------------  
