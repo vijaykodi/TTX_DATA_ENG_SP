@@ -69,7 +69,7 @@ GO
 
 /****** Cannot script Unresolved Entities : Server[@Name='TTXSASQL01']/Database[@Name='DataEnhancementAutomation']/UnresolvedEntity[@Name='SP_NewDataEnhancementRequest' and @Schema='dbo'] ******/
 GO
-
+---Stored  Procedure starts....
 /****** Object:  StoredProcedure [dbo].[sp_LogProcErrors]    Script Date: 7/16/2015 11:16:10 AM ******/
 SET ANSI_NULLS ON
 GO
